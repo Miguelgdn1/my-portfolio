@@ -666,6 +666,8 @@ function initLanguage() {
         { pt: "Global - Remoto Disponível", en: "Global - Remote Available" },
         { pt: "Nome", en: "Name" },
         { pt: "E-mail", en: "Email" },
+        { pt: "Telefone", en: "Phone" },
+        { pt: "Localização", en: "Location" },
         { pt: "Assunto", en: "Subject" },
         { pt: "Mensagem", en: "Message" },
         { pt: "Enviar Mensagem Segura", en: "Send Secure Message" },
