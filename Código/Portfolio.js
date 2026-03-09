@@ -683,7 +683,10 @@ function initLanguage() {
         { pt: "Status do Firewall", en: "Firewall Status" },
         { pt: "Detecção de Ameaças", en: "Threat Detection" },
         { pt: "MONITORANDO", en: "MONITORING" },
-        { pt: "Nível de Criptografia", en: "Encryption Level" }
+        { pt: "Nível de Criptografia", en: "Encryption Level" },
+        { pt: "Ver Serviços", en: "View Services" },
+        { pt: "Baixar Currículo", en: "Download Resume" }
+
     ];
 
     let currentLang = localStorage.getItem('lang') || 'en';
