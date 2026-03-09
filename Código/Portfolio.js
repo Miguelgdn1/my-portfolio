@@ -1,3 +1,6 @@
+import { db } from './firebase.js'; 
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 function initLoader() {
     const loader = document.getElementById('loader');
     const progressBar = loader.querySelector('.loader-progress-bar');
@@ -601,6 +604,10 @@ function initLanguage() {
         { pt: "Feedbacks", en: "Feedbacks" },
         { pt: "Certificações", en: "Certifications" },
         { pt: "Contato", en: "Contact" },
+        { pt: "Seu nome", en: "Your name" },
+        { pt: "Sua mensagem", en: "Your message" },
+        { pt: "Deixe seu feedback", en: "Leave your feedback" },
+        { pt: "Enviar", en: "Submit" },
         { pt: "Idioma", en: "Language" },
         { pt: " Desenvolvedor Full-Stack", en: " Full-Stack Developer" },
         { pt: "Desenvolvedor Full-Stack", en: "Full-Stack Developer" },
@@ -692,7 +699,7 @@ function initLanguage() {
     let currentLang = localStorage.getItem('lang') || 'en';
 
     function translatePage(lang) {
-        const elements = document.querySelectorAll('span, p, h1, h2, h3, h4, a, label, div');
+        const elements = document.querySelectorAll('span, p, h1, h2, h3, h4, a, label, div, button');
         
         elements.forEach(el => {
             if (el.childNodes.length > 0) {
@@ -707,6 +714,16 @@ function initLanguage() {
                         }
                     }
                 });
+            }
+        });
+        
+        // translate input/textarea placeholders
+        const formElems = document.querySelectorAll('input[placeholder], textarea[placeholder]');
+        formElems.forEach(el => {
+            const text = el.getAttribute('placeholder').trim();
+            const match = translations.find(t => t.pt === text || t.en === text);
+            if (match) {
+                el.setAttribute('placeholder', match[lang]);
             }
         });
         
@@ -729,6 +746,73 @@ function initLanguage() {
                     duration: 500,
                     easing: 'easeInOutQuad'
                 });
+            }
+        });
+    }
+}
+
+function initFeedback() {
+    const form = document.getElementById('feedbackForm');
+    const listEl = document.getElementById('feedbackList');
+
+    const feedbacksRef = collection(db, "feedbacks");
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]));
+    }
+
+    if (listEl) {
+        const q = query(feedbacksRef, orderBy("date", "desc"));
+        
+        onSnapshot(q, (snapshot) => {
+            let htmlContent = '';
+            
+            snapshot.forEach((doc) => {
+                const f = doc.data();
+                
+                // O Firebase salva a data num formato especial (Timestamp). 
+                // Precisamos converter de volta para texto legível.
+                let dateStr = '';
+                if (f.date && f.date.toDate) {
+                    dateStr = f.date.toDate().toLocaleString();
+                } else {
+                    dateStr = 'Data indisponível'; 
+                }
+
+                htmlContent += `
+                    <div class="feedback-item">
+                        <div class="feedback-name">${escapeHtml(f.name || 'Anônimo')}</div>
+                        <div class="feedback-date">${escapeHtml(dateStr)}</div>
+                        <div class="feedback-text">${escapeHtml(f.message || '')}</div>
+                    </div>
+                `;
+            });
+            
+            listEl.innerHTML = htmlContent;
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('feedbackName');
+            const msgInput = document.getElementById('feedbackMessage');
+            const name = nameInput.value.trim();
+            const message = msgInput.value.trim();
+            
+            if (!name || !message) return;
+
+            try {
+                await addDoc(feedbacksRef, {
+                    name: name,
+                    message: message,
+                    date: serverTimestamp() 
+                });
+                
+                form.reset();
+            } catch (error) {
+                console.error("Erro ao enviar o feedback: ", error);
+                alert("Poxa, deu um erro ao enviar seu feedback. Tente novamente!");
             }
         });
     }
@@ -974,6 +1058,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initParallax();
     initScrollEffects();
     initLanguage(); 
+    initFeedback();
     initHacksSlider();
     initProjectModal();
 });
