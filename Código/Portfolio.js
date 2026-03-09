@@ -1,3 +1,6 @@
+import { db } from './firebase.js'; 
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
 function initLoader() {
     const loader = document.getElementById('loader');
     const progressBar = loader.querySelector('.loader-progress-bar');
@@ -748,54 +751,68 @@ function initLanguage() {
 function initFeedback() {
     const form = document.getElementById('feedbackForm');
     const listEl = document.getElementById('feedbackList');
-    const storageKey = 'portfolioFeedbacks';
+
+    const feedbacksRef = collection(db, "feedbacks");
 
     function escapeHtml(str) {
         return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]));
     }
 
-    function loadFeedbacks() {
-        try {
-            return JSON.parse(localStorage.getItem(storageKey) || '[]');
-        } catch (e) {
-            return [];
-        }
-    }
+    if (listEl) {
+        const q = query(feedbacksRef, orderBy("date", "desc"));
+        
+        onSnapshot(q, (snapshot) => {
+            let htmlContent = '';
+            
+            snapshot.forEach((doc) => {
+                const f = doc.data();
+                
+                // O Firebase salva a data num formato especial (Timestamp). 
+                // Precisamos converter de volta para texto legível.
+                let dateStr = '';
+                if (f.date && f.date.toDate) {
+                    dateStr = f.date.toDate().toLocaleString();
+                } else {
+                    dateStr = 'Data indisponível'; 
+                }
 
-    function saveFeedbacks(arr) {
-        localStorage.setItem(storageKey, JSON.stringify(arr));
-    }
-
-    function render() {
-        if (!listEl) return;
-        const items = loadFeedbacks();
-        listEl.innerHTML = items.map(f => `
-            <div class="feedback-item">
-                <div class="feedback-name">${escapeHtml(f.name)}</div>
-                <div class="feedback-date">${escapeHtml(f.date)}</div>
-                <div class="feedback-text">${escapeHtml(f.message)}</div>
-            </div>
-        `).join('');
+                htmlContent += `
+                    <div class="feedback-item">
+                        <div class="feedback-name">${escapeHtml(f.name || 'Anônimo')}</div>
+                        <div class="feedback-date">${escapeHtml(dateStr)}</div>
+                        <div class="feedback-text">${escapeHtml(f.message || '')}</div>
+                    </div>
+                `;
+            });
+            
+            listEl.innerHTML = htmlContent;
+        });
     }
 
     if (form) {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const nameInput = document.getElementById('feedbackName');
             const msgInput = document.getElementById('feedbackMessage');
             const name = nameInput.value.trim();
             const message = msgInput.value.trim();
+            
             if (!name || !message) return;
-            const arr = loadFeedbacks();
-            const now = new Date();
-            arr.unshift({ name, message, date: now.toLocaleString() });
-            saveFeedbacks(arr);
-            render();
-            form.reset();
+
+            try {
+                await addDoc(feedbacksRef, {
+                    name: name,
+                    message: message,
+                    date: serverTimestamp() 
+                });
+                
+                form.reset();
+            } catch (error) {
+                console.error("Erro ao enviar o feedback: ", error);
+                alert("Poxa, deu um erro ao enviar seu feedback. Tente novamente!");
+            }
         });
     }
-
-    render();
 }
 
 function initHacksSlider() {
