@@ -670,7 +670,7 @@ function initLanguage() {
         { pt: "Localização", en: "Location" },
         { pt: "Assunto", en: "Subject" },
         { pt: "Mensagem", en: "Message" },
-        { pt: "Enviar Mensagem Segura", en: "Send Secure Message" },
+        { pt: "Enviar Mensagem", en: "Send Message" },
         { pt: "© 2026 Portfolio - Exemplo.", en: "© 2026 Portfolio - Example." },
         { pt: "INICIALIZAÇÃO DO PROCESSO DE BUILD", en: "BUILD PROCESS INITIALIZATION" },
         { pt: "[INFO] Compilando módulos...", en: "[INFO] Compiling modules..." },
