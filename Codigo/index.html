@@ -1,706 +1,1150 @@
-<html lang="en" dir="ltr">
+import { db } from './firebase.js'; 
+import { collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>My Portfolio - MIGUEl GOMES</title>
+function initLoader() {
+    const loader = document.getElementById('loader');
+    const progressBar = loader.querySelector('.loader-progress-bar');
+    const loaderPercent = loader.querySelector('.loader-percentage');
+    
+    if (!loader || !progressBar) return;
+    
+    let progress = 0;
+    const terminalLines = loader.querySelectorAll('.terminal-line');
+    
+    terminalLines.forEach((line, index) => {
+        setTimeout(() => {
+            line.style.opacity = '1';
+        }, index * 200);
+    });
+    
+    const interval = setInterval(() => {
+        progress += Math.random() * 15 + 5;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            
+            setTimeout(() => {
+                if (typeof anime !== 'undefined') {
+                    anime({
+                        targets: loader,
+                        opacity: [1, 0],
+                        duration: 500,
+                        easing: 'easeInOutQuad',
+                        complete: () => {
+                            loader.classList.add('hidden');
+                            initPageAnimations();
+                        }
+                    });
+                } else {
+                    loader.classList.add('hidden');
+                    initPageAnimations();
+                }
+            }, 500);
+        }
+        
+        progressBar.style.width = progress + '%';
+        if (loaderPercent) {
+            loaderPercent.textContent = Math.floor(progress) + '%';
+        }
+    }, 80);
+}
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&family=Fira+Code:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+function initMatrix() {
+    const canvas = document.getElementById('matrixCanvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+    
+    for (let x = 0; x < columns; x++) {
+        drops[x] = 1;
+    }
+    
+    function draw() {
+        ctx.fillStyle = 'rgba(10, 14, 26, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#00ff88';
+        ctx.font = fontSize + 'px monospace';
+        
+        for (let i = 0; i < drops.length; i++) {
+            const text = chars[Math.floor(Math.random() * chars.length)];
+            const x = i * fontSize;
+            const y = drops[i] * fontSize;
+            
+            ctx.fillText(text, x, y);
+            
+            if (y > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+    
+    setInterval(draw, 35);
+    
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+}
 
-    <link rel="stylesheet" href="Portfolio.css">
-</head>
+function initParticles() {
+    const container = document.getElementById('hackParticles');
+    if (!container) return;
+    
+    const particleCount = 30;
+    const chars = ['0', '1', '{', '}', '[', ']', '<', '>', '/', '*'];
+    
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.textContent = chars[Math.floor(Math.random() * chars.length)];
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+        container.appendChild(particle);
+    }
+}
 
-<body>
-
-    <div class="loader-screen" id="loader">
-        <div class="loader-container">
-            <div class="hack-terminal">
-                <div class="terminal-header">
-                    <div class="terminal-dots">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
-                    </div>
-                    <div class="terminal-title">BUILD PROCESS INITIALIZATION</div>
-                </div>
-                <div class="terminal-body">
-                    <div class="terminal-line">
-                        <span class="prompt">hgdc@workspace:~/portfolio$</span>
-                        <span class="command">npm run build && start-server</span>
-                    </div>
-                    <div class="terminal-line">
-                        <span class="output">[INFO] Compiling modules...</span>
-                    </div>
-                    <div class="terminal-line">
-                        <span class="output">[INFO] Building robust Java/Spring Boot backend: <span
-                                class="success">ACTIVE</span></span>
-                    </div>
-                    <div class="terminal-line">
-                        <span class="output">[INFO] Optimizing Angular frontend assets: <span
-                                class="success">ONLINE</span></span>
-                    </div>
-                    <div class="terminal-line">
-                        <span class="output success">[SUCCESS] System ready. Launching application.</span>
-                    </div>
-                    <div class="terminal-line">
-                        <span class="prompt">hgdc@workspace:~/portfolio$</span>
-                        <span class="cursor">_</span>
-                    </div>
-                </div>
-            </div>
-            <div class="loader-progress-container">
-                <div class="loader-progress-bar" id="loaderProgress"></div>
-                <div class="loader-percentage" id="loaderPercent">0%</div>
-            </div>
-            <div class="hack-lines">
-                <div class="hack-line"></div>
-                <div class="hack-line"></div>
-                <div class="hack-line"></div>
-            </div>
-        </div>
-    </div>
-
-    <header class="header" id="header">
-        <div class="header-container">
-            <nav class="nav">
-                <a href="#home" class="nav-brand">
-                    <div class="brand-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <span class="brand-text">Miguel Gomes</span>
-                </a>
-                <div class="nav-menu" id="navMenu">
-                    <a href="#home" class="nav-link active" data-section="home">
-                        <span class="nav-text">Home</span>
-                    </a>
-                    <a href="#hacks" class="nav-link" data-section="hacks">
-                        <span class="nav-text">Projects</span>
-                    </a>
-                    <a href="#about" class="nav-link" data-section="about">
-                        <span class="nav-text">About</span>
-                    </a>
-                    <a href="#services" class="nav-link" data-section="services">
-                        <span class="nav-text">Feedbacks</span>
-                    </a>
-                    <a href="#certifications" class="nav-link" data-section="certifications">
-                        <span class="nav-text">Certifications</span>
-                    </a>
-                    <a href="#contact" class="nav-link" data-section="contact">
-                        <span class="nav-text">Contact</span>
-                    </a>
-                </div>
-                <div class="nav-actions">
-                    <button class="dir-toggle" id="dirToggle" title="Toggle Direction">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span class="dir-text">Language</span>
-                    </button>
-                    <button class="menu-toggle" id="menuToggle">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                </div>
-            </nav>
-        </div>
-    </header>
-
-    <main class="main">
-
-        <section id="home" class="section hero">
-            <div class="hero-bg">
-                <canvas id="matrixCanvas"></canvas>
-                <div class="grid-overlay"></div>
-                <div class="scan-line"></div>
-                <div class="hack-particles" id="hackParticles"></div>
-            </div>
-            <div class="hero-container">
-                <div class="hero-content">
-                    <div class="hero-badge">
-                        <div class="badge-pulse"></div>
-                        <i class="fas fa-code"></i>
-                        <span> Full-Stack Developer</span>
-                    </div>
-                    <h1 class="hero-title">
-                        <span class="title-word" data-word="BEM-VINDO">BEM-VINDO</span>
-                        <span class="title-word highlight" data-word="AO MEU">AO MEU</span>
-                        <span class="title-word" data-word="PORTIFOLIO">PORTIFOLIO</span>
-                    </h1>
-                    <div class="hero-subtitle">
-                        <span class="subtitle-text">Full-Stack Development</span>
-                        <span class="subtitle-separator">|</span>
-                        <span class="subtitle-text">API Design</span>
-                        <span class="subtitle-separator">|</span>
-                        <span class="subtitle-text">Software Architecture</span>
-                    </div>
-                    <p class="hero-description">
-                        Engenheiro de Software focado na construção de arquiteturas robustas e aplicações web de alto
-                        desempenho, desde a infraestrutura de backend até interfaces dinâmicas e responsivas.
-                    </p>
-                    <div class="hero-stats">
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-server"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-number" data-count="5">0</div>
-                                <div class="stat-label">Projetos</div>
-                            </div>
-                            <div class="stat-glow"></div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-calendar-alt"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-number" data-count="2">0</div>
-                                <div class="stat-label">Years Experience</div>
-                            </div>
-                            <div class="stat-glow"></div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-certificate"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-number" data-count="5">0</div>
-                                <div class="stat-label">Certifications</div>
-                            </div>
-                            <div class="stat-glow"></div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-number" data-count="0">0</div>
-                                <div class="stat-label">Recomendações</div>
-                            </div>
-                            <div class="stat-glow"></div>
-                        </div>
-                    </div>
-                    <div class="hero-buttons">
-                        <a href="#contact" class="btn btn-primary">
-                            <span>Entre em contato</span>
-                            <i class="fas fa-paper-plane"></i>
-                            <div class="btn-shine"></div>
-                        </a>
-                        <a href="/MiguelGomesDoNascimento.pdf" download="MiguelGomesDoNascimento.pdf" class="btn btn-secondary">
-                            <span>Download Resume</span>
-                            <i class="fas fa-file-download"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="hero-visual">
-                    <div class="security-monitor expanded">
-                        <div class="monitor-frame">
-                            <div class="monitor-screen">
-                                <div class="screen-content">
-                                    <div class="screen-header">
-                                        <div class="screen-dots">
-                                            <span class="red"></span>
-                                            <span class="yellow"></span>
-                                            <span class="green"></span>
-                                        </div>
-                                        <div class="screen-title">COMMAND CENTER - MIGUEL GOMES</div>
-                                        <div class="screen-status">SYSTEMS: <span class="online">ONLINE</span></div>
-                                    </div>
-                                    <div class="screen-body metrics-grid">
-
-                                        <div class="metric-group">
-                                            <h4 class="metric-title"><i class="fas fa-history"></i> Coding Activity
-                                                (WakaTime)</h4>
-                                            <img src="https://helio-github-stats.vercel.app/api/wakatime?username=miguelgdn&custom_title=Tempo+de+Código&card_width=466&layout=compact&display_format=time&theme=dark"
-                                                class="waka-img" alt="WakaTime">
-                                            <img src="https://helio-github-stats.vercel.app/api/wakatime?username=miguelgdn&custom_title=Linguagens&card_width=466&layout=default&display_format=time&theme=dark"
-                                                class="waka-img" alt="WakaTime Langs">
-                                        </div>
-
-                                        <div class="metric-group">
-                                            <h4 class="metric-title"><i class="fab fa-github"></i> GitHub Overview</h4>
-                                            <img src="http://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=miguelgdn&theme=github_dark"
-                                                class="waka-img" alt="Profile Details">
-                                            <img src="https://github-streak-stats-ruby.vercel.app/?user=miguelgdn&theme=dark&hide_border=true&locale=pt_BR"
-                                                class="waka-img" alt="GitHub Streak">
-                                        </div>
-
-                                        <div class="metric-group full-width">
-                                            <h4 class="metric-title"><i class="fas fa-snake"></i> Contribution Grid</h4>
-                                            <div class="flex-row">
-                                                <img src="https://helio-github-stats.vercel.app/api/top-langs?username=miguelgdn&layout=pie&theme=dark&hide_border=true&card_width=300"
-                                                    class="waka-img compact" alt="Top Langs">
-                                                <img src="https://joaopauloaramuni.github.io/image/github-user-contribution.svg"
-                                                    class="waka-img snake" alt="Snake Game">
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="monitor-stand"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-
-        </section>
-
-        <section id="hacks" class="section hacks-section">
-            <div class="section-bg">
-                <div class="section-pattern"></div>
-            </div>
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-number">02</span>
-                    <h2 class="section-title">
-                        <span class="title-text">Projetos</span>
-                        <span class="title-underline"></span>
-                    </h2>
-                </div>
-                <div class="hacks-slider">
-                    <div class="slider-main-container">
-                        <div class="slider-viewport">
-                            <div class="slider-track" id="sliderTrack">
-                                
-                                <div class="slider-slide active">
-                                    <div class="slide-card project-card" data-title="Scraper - Reclame Aqui"
-                                        data-description="Varre o site do reclame aqui e busca informações das melhores e piores casas de aposta"
-                                        data-tech="Python, Selenium, BeautifulSoup"
-                                        data-gif="">
-
-                                        <img src="./assets/reclameAqui.gif" alt="GIF do Scraper Reclame Aqui" class="slide-cover-img">
-                                        <div class="slide-overlay"></div>
-
-                                        <div class="slide-content-wrapper">
-                                            <h3 class="slide-title">Scraper - Reclame Aqui</h3>
-                                            <p class="slide-description">Varre o site do reclame aqui e busca informações das melhores e piores casas de aposta</p>
-                                            <div class="slide-metrics">
-                                                <div class="metric-item">
-                                                    <span class="metric-value">Python</span>
-                                                    <span class="metric-label">Selenium, BeautifulSoup</span>
-                                                </div>
-                                            </div>
-                                            <div class="click-hint"><i class="fas fa-search-plus"></i> Clique para detalhes</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="slider-slide">
-                                    <div class="slide-card project-card" data-title="Ética na Engenharia de Software"
-                                        data-description="Pesquisa e estudo aprofundado sobre os dilemas éticos, impactos sociais e responsabilidades no desenvolvimento de software."
-                                        data-tech="Pesquisa Acadêmica, Engenharia de Software"
-                                        data-gif="">
-
-                                        <img src="" alt="Project Cover" class="slide-cover-img">
-                                        <div class="slide-overlay"></div>
-
-                                        <div class="slide-content-wrapper">
-                                            <h3 class="slide-title">Ética na Eng. de Software</h3>
-                                            <p class="slide-description">Pesquisa sobre os dilemas éticos e responsabilidades no desenvolvimento de software.</p>
-                                            <div class="slide-metrics">
-                                                <div class="metric-item">
-                                                    <span class="metric-value">Pesquisa</span>
-                                                    <span class="metric-label">Acadêmica</span>
-                                                </div>
-                                            </div>
-                                            <div class="click-hint"><i class="fas fa-search-plus"></i> Clique para detalhes</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="slider-slide">
-                                    <div class="slide-card project-card" data-title="Automação de Notas Fiscais"
-                                        data-description="Script em desenvolvimento focado em automatizar a leitura, o processamento e a gestão de notas fiscais para otimização de tempo."
-                                        data-tech="Python, Automação, Manipulação de Dados"
-                                        data-gif="">
-
-                                        <img src="" alt="Project Cover" class="slide-cover-img">
-                                        <div class="slide-overlay"></div>
-
-                                        <div class="slide-content-wrapper">
-                                            <h3 class="slide-title">Automação de NF</h3>
-                                            <p class="slide-description">Ferramenta para leitura e processamento automático de notas fiscais.</p>
-                                            <div class="slide-metrics">
-                                                <div class="metric-item">
-                                                    <span class="metric-value">Python</span>
-                                                    <span class="metric-label">Em andamento</span>
-                                                </div>
-                                            </div>
-                                            <div class="click-hint"><i class="fas fa-search-plus"></i> Clique para detalhes</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="slider-slide">
-                                    <div class="slide-card project-card" data-title="Sistema para Oficina Mecânica"
-                                        data-description="Plataforma web desenvolvida para otimizar o gerenciamento de clientes, serviços, ordens de serviço e orçamentos de uma oficina automotiva."
-                                        data-tech="Front-end, Back-end, Banco de Dados"
-                                        data-gif="">
-
-                                        <img src="" alt="Project Cover" class="slide-cover-img">
-                                        <div class="slide-overlay"></div>
-
-                                        <div class="slide-content-wrapper">
-                                            <h3 class="slide-title">Oficina Mecânica Web</h3>
-                                            <p class="slide-description">Sistema completo para gerenciamento de clientes e ordens de serviço automotivas.</p>
-                                            <div class="slide-metrics">
-                                                <div class="metric-item">
-                                                    <span class="metric-value">Web</span>
-                                                    <span class="metric-label">Gestão / Sistema</span>
-                                                </div>
-                                            </div>
-                                            <div class="click-hint"><i class="fas fa-search-plus"></i> Clique para detalhes</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="slider-slide">
-                                    <div class="slide-card project-card" data-title="Sistema BH + Feliz"
-                                        data-description="Desenvolvimento de um sistema web para estruturar e apoiar as iniciativas do projeto social BH + Feliz da Prefeitura."
-                                        data-tech="Java, Integração de Dados, Web"
-                                        data-gif="">
-
-                                        <img src="" alt="Project Cover" class="slide-cover-img">
-                                        <div class="slide-overlay"></div>
-
-                                        <div class="slide-content-wrapper">
-                                            <h3 class="slide-title">Sistema BH + Feliz</h3>
-                                            <p class="slide-description">Sistema para apoiar o projeto da prefeitura BH + Feliz.</p>
-                                            <div class="slide-metrics">
-                                                <div class="metric-item">
-                                                    <span class="metric-value">Impacto</span>
-                                                    <span class="metric-label">Em andamento</span>
-                                                </div>
-                                            </div>
-                                            <div class="click-hint"><i class="fas fa-search-plus"></i> Clique para detalhes</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="slider-controls">
-                            <button class="slider-nav-btn prev-btn" id="prevBtn">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <div class="slider-indicators" id="sliderIndicators"></div>
-                            <button class="slider-nav-btn next-btn" id="nextBtn">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                        <div class="slider-footer">
-                            <div class="slider-counter">
-                                <span class="current-slide" id="currentSlide">01</span>
-                                <span class="slide-separator">/</span>
-                                <span class="total-slides" id="totalSlides">05</span>
-                            </div>
-                            <div class="slider-progress-wrapper">
-                                <div class="slider-progress-bar">
-                                    <div class="slider-progress-fill" id="sliderProgress"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-<section id="about" class="section about-section">
-            <div class="section-bg">
-                <div class="section-pattern"></div>
-            </div>
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-number">01</span>
-                    <h2 class="section-title">
-                        <span class="title-text">Sobre Mim</span>
-                        <span class="title-underline"></span>
-                    </h2>
-                </div>
-                <div class="about-wrapper">
-                    <div class="about-intro-section">
-                        <div class="about-badge">
-                            <i class="fas fa-user-graduate"></i>
-                            <span>Estudante de Engenharia de Software</span>
-                        </div>
-                        <p class="about-text">
-                            Sou estudante de Engenharia de Software na Puc Minas, apaixonado por transformar problemas complexos em soluções elegantes. Tenho foco em desenvolver aplicações eficientes, sempre buscando aprender novas tecnologias e aprimorar minhas habilidades em desenvolvimento [Front-end / Back-end / Full-stack].
-                        </p>
-                    </div>
-                    <div class="about-grid">
-                        <div class="about-content">
-                            <div class="about-features">
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="fas fa-server"></i>
-                                    </div>
-                                    <div class="feature-content">
-                                        <h3 class="feature-title">Desenvolvimento Back-end</h3>
-                                        <p class="feature-desc">Experiência na construção de lógicas de servidor e APIs utilizando Python, Java e bancos de dados como AWS DynamoDB.</p>
-                                    </div>
-                                </div>
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="fas fa-laptop-code"></i>
-                                    </div>
-                                    <div class="feature-content">
-                                        <h3 class="feature-title">Ecossistema Web</h3>
-                                        <p class="feature-desc">Integração de serviços e estruturação de projetos utilizando ferramentas como Firebase para aplicações dinâmicas.</p>
-                                    </div>
-                                </div>
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="fas fa-code-branch"></i>
-                                    </div>
-                                    <div class="feature-content">
-                                        <h3 class="feature-title">Controle de Versão</h3>
-                                        <p class="feature-desc">Gerenciamento de código fonte e versionamento de projetos utilizando Git.</p>
-                                    </div>
-                                </div>
-                                <div class="feature-card">
-                                    <div class="feature-icon">
-                                        <i class="fas fa-lightbulb"></i>
-                                    </div>
-                                    <div class="feature-content">
-                                        <h3 class="feature-title">Adaptabilidade (Flexibilidade Cognitiva)</h3>
-                                        <p class="feature-desc">A habilidade de aprender rápido e se ajustar a mudanças. No mundo tech e corporativo de hoje, quem não se dobra, quebra.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="about-visual">
-                            <div class="security-terminal">
-                                <div class="terminal-header">
-                                    <div class="terminal-dots">
-                                        <span class="dot red"></span>
-                                        <span class="dot yellow"></span>
-                                        <span class="dot green"></span>
-                                    </div>
-                                    <div class="terminal-title">VS CODE - TERMINAL</div>
-                                </div>
-                                <div class="terminal-body">
-                                    <div class="terminal-line">
-                                        <span class="prompt">miguel@MacBook-Air-de-Miguel ~/my-portfolio-1 $</span>
-                                        <span class="command">git status</span>
-                                    </div>
-                                    <div class="terminal-line">
-                                        <span class="output">On branch main</span>
-                                    </div>
-                                    <div class="terminal-line">
-                                        <span class="output">Your branch is up to date with 'origin/main'.</span>
-                                    </div>
-                                    <div class="terminal-line">
-                                        <br>
-                                    </div>
-                                    <div class="terminal-line">
-                                        <span class="prompt">miguel@MacBook-Air-de-Miguel ~/my-portfolio-1 $</span>
-                                        <span class="command">python -m venv venv && source venv/bin/activate</span>
-                                    </div>
-                                    <div class="terminal-line">
-                                        <span class="output success">(venv) Ambiente virtual ativado com sucesso.</span>
-                                    </div>
-                                    <div class="terminal-line">
-                                        <span class="prompt">(venv) miguel@MacBook-Air-de-Miguel ~/my-portfolio-1 $</span>
-                                        <span class="cursor">_</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        </section>
-        <section id="services" class="section services-section">
-            <div class="section-bg">
-                <div class="section-pattern"></div>
-            </div>
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-number">02</span>
-                    <h2 class="section-title">
-                        <span class="title-text">Feedbacks</span>
-                        <span class="title-underline"></span>
-                    </h2>
-                </div>
-                <div class="feedback-container">
-                    <div class="service-card feedback-card">
-                        <div class="service-header">
-                            <div class="service-icon">
-                                <i class="fas fa-comment-alt"></i>
-                                <div class="icon-glow"></div>
-                            </div>
-                        </div>
-                        <h3 class="service-title feedback-heading">Deixe seu feedback</h3>
-                        <form id="feedbackForm" class="feedback-form">
-                            <div class="form-group">
-                                <label for="feedbackName">Nome</label>
-                                <input type="text" id="feedbackName" required placeholder="Seu nome">
-                            </div>
-                            <div class="form-group">
-                                <label for="feedbackMessage">Mensagem</label>
-                                <textarea id="feedbackMessage" required placeholder="Sua mensagem"></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Enviar</button>
-                        </form>
-                    </div>
-                    <div id="feedbackList" class="feedback-list"></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="certifications" class="section certs-section">
-            <div class="section-bg">
-                <div class="section-pattern"></div>
-            </div>
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-number">03</span>
-                    <h2 class="section-title">
-                        <span class="title-text">Certificações</span>
-                        <span class="title-underline"></span>
-                    </h2>
-                </div>
-                <div class="certs-grid">
+function initNavigation() {
+    const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+    const header = document.getElementById('header');
+    
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href');
+            const target = document.querySelector(targetId);
+            
+            if (target) {
+                const headerHeight = header.offsetHeight;
+                const targetPosition = target.offsetTop - headerHeight;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+                
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            }
+        });
+    });
+    
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                
+                const sections = document.querySelectorAll('section[id]');
+                const scrollPos = window.scrollY + 200;
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
                     
-                    <div class="cert-card">
-                        <div class="cert-badge">
-                            <i class="fab fa-swift"></i>
-                            <div class="badge-pulse"></div>
-                        </div>
-                        <h3 class="cert-title">Swift</h3>
-                        <p class="cert-name">Linguagem de Programação</p>
-                        <p class="cert-org">[Instituição / Plataforma]</p>
-                        <div class="cert-year">[Ano]</div>
-                        <div class="cert-glow"></div>
+                    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${sectionId}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+                
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
+
+function initPageAnimations() {
+    setTimeout(() => {
+        initHeroAnimations();
+        initScrollAnimations();
+    }, 300);
+}
+
+function initHeroAnimations() {
+    if (typeof anime === 'undefined') return;
+    
+    const titleWords = document.querySelectorAll('.title-word');
+    titleWords.forEach((word, index) => {
+        anime({
+            targets: word,
+            opacity: [0, 1],
+            translateY: [50, 0],
+            delay: index * 200,
+            duration: 1000,
+            easing: 'easeOutExpo'
+        });
+    });
+    
+    const badge = document.querySelector('.hero-badge');
+    if (badge) {
+        anime({
+            targets: badge,
+            opacity: [0, 1],
+            scale: [0.8, 1],
+            delay: 300,
+            duration: 800,
+            easing: 'easeOutBack'
+        });
+    }
+    
+    const subtitle = document.querySelector('.hero-subtitle');
+    if (subtitle) {
+        anime({
+            targets: subtitle,
+            opacity: [0, 1],
+            translateY: [20, 0],
+            delay: 800,
+            duration: 800,
+            easing: 'easeOutExpo'
+        });
+    }
+    
+    const description = document.querySelector('.hero-description');
+    if (description) {
+        anime({
+            targets: description,
+            opacity: [0, 1],
+            translateY: [20, 0],
+            delay: 1000,
+            duration: 800,
+            easing: 'easeOutExpo'
+        });
+    }
+    
+    const statCards = document.querySelectorAll('.stat-card');
+    if (statCards.length > 0) {
+        anime({
+            targets: statCards,
+            opacity: [0, 1],
+            translateY: [30, 0],
+            delay: anime.stagger(100, {start: 1200}),
+            duration: 800,
+            easing: 'easeOutExpo'
+        });
+    }
+    
+    const buttons = document.querySelectorAll('.hero-buttons .btn');
+    if (buttons.length > 0) {
+        anime({
+            targets: buttons,
+            opacity: [0, 1],
+            scale: [0.8, 1],
+            delay: anime.stagger(100, {start: 1800}),
+            duration: 800,
+            easing: 'easeOutBack'
+        });
+    }
+    
+    const monitor = document.querySelector('.security-monitor');
+    if (monitor) {
+        anime({
+            targets: monitor,
+            opacity: [0, 1],
+            scale: [0.9, 1],
+            rotate: [5, 0],
+            delay: 1000,
+            duration: 1200,
+            easing: 'easeOutElastic(1, .8)'
+        });
+    }
+    
+    const floatIcons = document.querySelectorAll('.float-icon');
+    if (floatIcons.length > 0) {
+        anime({
+            targets: floatIcons,
+            opacity: [0, 1],
+            scale: [0, 1],
+            delay: anime.stagger(150, {start: 1500}),
+            duration: 800,
+            easing: 'easeOutBack'
+        });
+    }
+}
+
+function initScrollAnimations() {
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        try {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            gsap.utils.toArray('.section').forEach(section => {
+                const header = section.querySelector('.section-header');
+                if (header) {
+                    gsap.from(header, {
+                        opacity: 0,
+                        y: -50,
+                        duration: 1,
+                        ease: 'power3.out',
+                        scrollTrigger: {
+                            trigger: section,
+                            start: 'top 80%',
+                            toggleActions: 'play none none none'
+                        }
+                    });
+                }
+            });
+            
+            gsap.utils.toArray('.service-card, .cert-card, .feature-card, .contact-card').forEach(card => {
+                gsap.from(card, {
+                    opacity: 0,
+                    y: 50,
+                    duration: 0.8,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+            });
+        } catch (e) {
+            console.log('GSAP ScrollTrigger not available, using fallback');
+            initScrollAnimationsFallback();
+        }
+    } else {
+        initScrollAnimationsFallback();
+    }
+}
+
+function initScrollAnimationsFallback() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (typeof anime !== 'undefined') {
+                    anime({
+                        targets: entry.target,
+                        opacity: [0, 1],
+                        translateY: [50, 0],
+                        duration: 800,
+                        easing: 'easeOutExpo'
+                    });
+                } else {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    const animateElements = document.querySelectorAll('.service-card, .cert-card, .feature-card, .contact-card, .section-header');
+    animateElements.forEach(el => {
+        el.style.opacity = '0';
+        observer.observe(el);
+    });
+}
+
+function initStats() {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    
+    statNumbers.forEach(stat => {
+        const target = parseInt(stat.getAttribute('data-count') || 0);
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (typeof anime !== 'undefined') {
+                        anime({
+                            targets: { value: 0 },
+                            value: target,
+                            duration: 2000,
+                            easing: 'easeOutExpo',
+                            update: function(anim) {
+                                stat.textContent = Math.floor(anim.animatables[0].target.value);
+                            }
+                        });
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        observer.observe(stat);
+    });
+}
+
+function initMobileMenu() {
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    const body = document.body;
+    
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isActive = menuToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            
+            if (isActive) {
+                body.style.overflow = 'hidden';
+            } else {
+                body.style.overflow = '';
+            }
+        });
+        
+        const navLinks = navMenu.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                body.style.overflow = '';
+            });
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+                menuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                body.style.overflow = '';
+            }
+        });
+        
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                menuToggle.classList.remove('active');
+                navMenu.classList.remove('active');
+                body.style.overflow = '';
+            }
+        });
+    }
+}
+
+function initParallax() {
+    const monitor = document.querySelector('.security-monitor');
+    const floatIcons = document.querySelectorAll('.float-icon');
+    
+    if (!monitor) return;
+    
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const scrolled = window.pageYOffset;
+                const heroSection = document.querySelector('.hero');
+                const heroHeight = heroSection.offsetHeight;
+                
+                if (scrolled < heroHeight) {
+                    const parallaxSpeed = 0.2;
+                    const offset = scrolled * parallaxSpeed;
+                    
+                    if (monitor) {
+                        monitor.style.transform = `translateY(${offset}px)`;
+                    }
+                    
+                    floatIcons.forEach((icon, index) => {
+                        const speed = 0.15 + (index * 0.05);
+                        const iconOffset = scrolled * speed;
+                        icon.style.transform = `translateY(${iconOffset}px)`;
+                    });
+                }
+                
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
+
+function initScrollEffects() {
+    const sections = document.querySelectorAll('.section');
+    let useGSAP = false;
+    
+    if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+        try {
+            gsap.registerPlugin(ScrollTrigger);
+            useGSAP = true;
+            
+            sections.forEach((section) => {
+                const bg = section.querySelector('.section-bg');
+                if (bg) {
+                    gsap.set(bg, { y: 0, clearProps: 'transform' });
+                    
+                    gsap.to(bg, {
+                        y: -20,
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: section,
+                            start: 'top bottom',
+                            end: 'bottom top',
+                            scrub: 1,
+                            invalidateOnRefresh: true,
+                            onLeave: () => {
+                                gsap.set(bg, { y: 0, clearProps: 'transform' });
+                            },
+                            onEnterBack: () => {
+                                gsap.set(bg, { y: 0, clearProps: 'transform' });
+                            },
+                            onUpdate: (self) => {
+                                if (self.progress === 0) {
+                                    gsap.set(bg, { y: 0, clearProps: 'transform' });
+                                } else if (self.progress === 1) {
+                                    gsap.set(bg, { y: -20 });
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+            
+            const scanLine = document.querySelector('.scan-line');
+            if (scanLine) {
+                gsap.to(scanLine, {
+                    y: window.innerHeight * 2,
+                    ease: 'none',
+                    scrollTrigger: {
+                        trigger: '.hero',
+                        start: 'top top',
+                        end: 'bottom top',
+                        scrub: true
+                    }
+                });
+            }
+        } catch (e) {
+            console.log('GSAP ScrollTrigger error:', e);
+            useGSAP = false;
+        }
+    }
+    
+    if (!useGSAP) {
+        let ticking = false;
+        
+        function updateParallax() {
+            sections.forEach(section => {
+                const bg = section.querySelector('.section-bg');
+                if (bg) {
+                    const rect = section.getBoundingClientRect();
+                    const windowHeight = window.innerHeight;
+                    const sectionHeight = rect.height;
+                    
+                    if (rect.top < windowHeight && rect.bottom > 0) {
+                        const viewportProgress = (windowHeight - rect.top) / (windowHeight + sectionHeight);
+                        const progress = Math.max(0, Math.min(1, viewportProgress));
+                        const maxOffset = 20;
+                        const offset = progress * maxOffset;
+                        bg.style.transform = `translateY(${offset}px)`;
+                    } else if (rect.bottom < 0 || rect.top > windowHeight) {
+                        bg.style.transform = 'translateY(0)';
+                    }
+                }
+            });
+            ticking = false;
+        }
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        }, { passive: true });
+        
+        updateParallax();
+        
+        window.addEventListener('resize', () => {
+            updateParallax();
+        }, { passive: true });
+    }
+    
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+            } else {
+                const bg = entry.target.querySelector('.section-bg');
+                if (bg && !useGSAP) {
+                    bg.style.transform = 'translateY(0)';
+                }
+            }
+        });
+    }, observerOptions);
+    
+    sections.forEach(section => {
+        sectionObserver.observe(section);
+    });
+    
+    window.addEventListener('load', () => {
+        sections.forEach(section => {
+            const bg = section.querySelector('.section-bg');
+            if (bg) {
+                bg.style.transform = 'translateY(0)';
+            }
+        });
+    });
+}
+
+function initLanguage() {
+    const dirToggle = document.getElementById('dirToggle');
+    
+  const translations = [
+        // --- Navegação ---
+        { pt: "Início", en: "Home" },
+        { pt: "Projetos", en: "Projects" },
+        { pt: "Sobre", en: "About" },
+        { pt: "Feedbacks", en: "Feedbacks" },
+        { pt: "Certificações", en: "Certifications" },
+        { pt: "Contato", en: "Contact" },
+        { pt: "Idioma", en: "Language" },
+
+        // --- Loader e Terminal Hero ---
+        { pt: "INICIALIZAÇÃO DO PROCESSO DE BUILD", en: "BUILD PROCESS INITIALIZATION" },
+        { pt: "[INFO] Compilando módulos...", en: "[INFO] Compiling modules..." },
+        { pt: "[INFO] Construindo backend Java/Spring Boot robusto: ", en: "[INFO] Building robust Java/Spring Boot backend: " },
+        { pt: "[INFO] Otimizando assets do frontend Angular: ", en: "[INFO] Optimizing Angular frontend assets: " },
+        { pt: "[SUCESSO] Sistema pronto. Iniciando aplicação.", en: "[SUCCESS] System ready. Launching application." },
+        { pt: "ATIVO", en: "ACTIVE" },
+        { pt: "ONLINE", en: "ONLINE" },
+        { pt: "COMMAND CENTER - MIGUEL GOMES", en: "COMMAND CENTER - MIGUEL GOMES" },
+        { pt: "SISTEMAS: ", en: "SYSTEMS: " },
+
+        // --- Hero Section ---
+        { pt: " Desenvolvedor Full-Stack", en: " Full-Stack Developer" },
+        { pt: "Desenvolvedor Full-Stack", en: "Full-Stack Developer" },
+        { pt: "BEM-VINDO", en: "WELCOME" },
+        { pt: "AO MEU", en: "TO MY" },
+        { pt: "PORTIFOLIO", en: "PORTFOLIO" },
+        { pt: "Desenvolvimento Full-Stack", en: "Full-Stack Development" },
+        { pt: "Design de API", en: "API Design" },
+        { pt: "Arquitetura de Software", en: "Software Architecture" },
+        { pt: "Engenheiro de Software focado na construção de arquiteturas robustas e aplicações web de alto desempenho, desde a infraestrutura de backend até interfaces dinâmicas e responsivas.", en: "Software Engineer focused on building robust architectures and high-performance web applications, from backend infrastructure to dynamic and responsive interfaces." },
+        
+        // --- Hero Stats ---
+        { pt: "Projetos", en: "Projects" },
+        { pt: "Anos de Experiência", en: "Years Experience" },
+        { pt: "Recomendações", en: "Recommendations" },
+        { pt: "Entre em contato", en: "Contact Me" },
+        { pt: "Baixar Currículo", en: "Download Resume" },
+
+        // --- Projetos (Slider) ---
+        { pt: "Scraper - Reclame Aqui", en: "Scraper - Reclame Aqui" },
+        { pt: "Varre o site do reclame aqui e busca informações das melhores e piores casas de aposta", en: "Scrapes the Reclame Aqui website to fetch information about the best and worst betting platforms" },
+        { pt: "Ética na Engenharia de Software", en: "Ethics in Software Engineering" },
+        { pt: "Pesquisa e estudo aprofundado sobre os dilemas éticos, impactos sociais e responsabilidades no desenvolvimento de software.", en: "In-depth research and study on ethical dilemmas, social impacts, and responsibilities in software development." },
+        { pt: "Pesquisa Acadêmica, Engenharia de Software", en: "Academic Research, Software Engineering" },
+        { pt: "Pesquisa sobre os dilemas éticos e responsabilidades no desenvolvimento de software.", en: "Research on ethical dilemmas and responsibilities in software development." },
+        { pt: "Pesquisa", en: "Research" },
+        { pt: "Acadêmica", en: "Academic" },
+        
+        { pt: "Automação de Notas Fiscais", en: "Invoice Automation" },
+        { pt: "Script em desenvolvimento focado em automatizar a leitura, o processamento e a gestão de notas fiscais para otimização de tempo.", en: "Script in development focused on automating the reading, processing, and management of invoices for time optimization." },
+        { pt: "Python, Automação, Manipulação de Dados", en: "Python, Automation, Data Manipulation" },
+        { pt: "Automação de NF", en: "Invoice Automation" },
+        { pt: "Ferramenta para leitura e processamento automático de notas fiscais.", en: "Tool for automatic reading and processing of invoices." },
+        { pt: "Em andamento", en: "In progress" },
+        
+        { pt: "Sistema para Oficina Mecânica", en: "Mechanic Shop System" },
+        { pt: "Plataforma web desenvolvida para otimizar o gerenciamento de clientes, serviços, ordens de serviço e orçamentos de uma oficina automotiva.", en: "Web platform developed to optimize the management of clients, services, work orders, and quotes for an automotive shop." },
+        { pt: "Front-end, Back-end, Banco de Dados", en: "Front-end, Back-end, Database" },
+        { pt: "Oficina Mecânica Web", en: "Web Mechanic Shop" },
+        { pt: "Sistema completo para gerenciamento de clientes e ordens de serviço automotivas.", en: "Complete system for managing clients and automotive work orders." },
+        { pt: "Gestão / Sistema", en: "Management / System" },
+        
+        { pt: "Sistema BH + Feliz", en: "BH + Feliz System" },
+        { pt: "Desenvolvimento de um sistema web para estruturar e apoiar as iniciativas do projeto social BH + Feliz da Prefeitura.", en: "Development of a web system to structure and support the initiatives of the City Hall's social project BH + Feliz." },
+        { pt: "Java, Integração de Dados, Web", en: "Java, Data Integration, Web" },
+        { pt: "Sistema para apoiar o projeto da prefeitura BH + Feliz.", en: "System to support the city hall's BH + Feliz project." },
+        { pt: "Impacto", en: "Impact" },
+        { pt: "Clique para detalhes", en: "Click for details" },
+
+        // --- Sobre Mim ---
+        { pt: "Sobre Mim", en: "About Me" },
+        { pt: "Estudante de Engenharia de Software", en: "Software Engineering Student" },
+        { pt: "Sou estudante de Engenharia de Software na Puc Minas, apaixonado por transformar problemas complexos em soluções elegantes. Tenho foco em desenvolver aplicações eficientes, sempre buscando aprender novas tecnologias e aprimorar minhas habilidades em desenvolvimento [Front-end / Back-end / Full-stack].", en: "I am a Software Engineering student at Puc, passionate about turning complex problems into elegant solutions. I focus on developing efficient applications, always seeking to learn new technologies and improve my skills in [Front-end / Back-end / Full-stack] development." },
+        { pt: "Desenvolvimento Back-end", en: "Back-end Development" },
+        { pt: "Experiência na construção de lógicas de servidor e APIs utilizando Python, Java e bancos de dados como AWS DynamoDB.", en: "Experience in building server logic and APIs using Python, Java, and databases like AWS DynamoDB." },
+        { pt: "Ecossistema Web", en: "Web Ecosystem" },
+        { pt: "Integração de serviços e estruturação de projetos utilizando ferramentas como Firebase para aplicações dinâmicas.", en: "Service integration and project structuring using tools like Firebase for dynamic applications." },
+        { pt: "Controle de Versão", en: "Version Control" },
+        { pt: "Gerenciamento de código fonte e versionamento de projetos utilizando Git.", en: "Source code management and project versioning using Git." },
+        { pt: "Adaptabilidade (Flexibilidade Cognitiva)", en: "Adaptability (Cognitive Flexibility)" },
+        { pt: "A habilidade de aprender rápido e se ajustar a mudanças. No mundo tech e corporativo de hoje, quem não se dobra, quebra.", en: "The ability to learn quickly and adapt to change. In today's tech and corporate world, those who don't bend, break." },
+        { pt: "Ambiente virtual ativado com sucesso.", en: "Virtual environment activated successfully." },
+
+        // --- Feedbacks ---
+        { pt: "Deixe seu feedback", en: "Leave your feedback" },
+        { pt: "Seu nome", en: "Your name" },
+        { pt: "Nome", en: "Name" },
+        { pt: "Mensagem", en: "Message" },
+        { pt: "Sua mensagem", en: "Your message" },
+        { pt: "Enviar", en: "Submit" },
+
+        // --- Certificações ---
+        { pt: "Linguagem de Programação", en: "Programming Language" },
+        { pt: "[Instituição / Plataforma]", en: "[Institution / Platform]" },
+        { pt: "[Ano]", en: "[Year]" },
+        { pt: "Desenvolvimento e Automação", en: "Development and Automation" },
+        { pt: "Desenvolvimento Front-end", en: "Front-end Development" },
+
+        // --- Contato e Footer ---
+        { pt: "Email", en: "Email" },
+        { pt: "Telefone", en: "Phone" },
+        { pt: "Localização", en: "Location" },
+        { pt: "Assunto", en: "Subject" },
+        { pt: "Enviar Mensagem", en: "Send Message" },
+        { pt: "Belo Horizonte - MG - Brasil", en: "Belo Horizonte - MG - Brazil" },
+        { pt: "© 2026 Portfolio - Exemplo.", en: "© 2026 Portfolio - Example." },
+        { pt: "© 2026 Portfolio - Example.", en: "© 2026 Portfolio - Example." }
+    ];
+
+    let currentLang = localStorage.getItem('lang') || 'en';
+
+    function translatePage(lang) {
+        const elements = document.querySelectorAll('span, p, h1, h2, h3, h4, a, label, div, button');
+        
+        elements.forEach(el => {
+            if (el.childNodes.length > 0) {
+                el.childNodes.forEach(node => {
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        let text = node.textContent.trim();
+                        if (text) {
+                            // Normalize whitespace for matching (remove extra spaces and newlines)
+                            const normalizedText = text.replace(/\s+/g, ' ');
+                            const match = translations.find(t => 
+                                (t.pt.replace(/\s+/g, ' ') === normalizedText) || 
+                                (t.en.replace(/\s+/g, ' ') === normalizedText)
+                            );
+                            if (match) {
+                                const replacementText = match[lang];
+                                node.textContent = node.textContent.replace(text, replacementText);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+        
+        // translate input/textarea placeholders
+        const formElems = document.querySelectorAll('input[placeholder], textarea[placeholder]');
+        formElems.forEach(el => {
+            const text = el.getAttribute('placeholder').trim();
+            const match = translations.find(t => t.pt === text || t.en === text);
+            if (match) {
+                el.setAttribute('placeholder', match[lang]);
+            }
+        });
+        
+        const dirText = dirToggle?.querySelector('.dir-text');
+        if (dirText) dirText.textContent = lang === 'pt' ? 'EN' : 'PT-BR';
+    }
+
+    translatePage(currentLang);
+
+    if (dirToggle) {
+        dirToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'pt' : 'en';
+            localStorage.setItem('lang', currentLang);
+            translatePage(currentLang);
+            
+            if (typeof anime !== 'undefined') {
+                anime({
+                    targets: dirToggle,
+                    rotate: [0, 360],
+                    duration: 500,
+                    easing: 'easeInOutQuad'
+                });
+            }
+        });
+    }
+}
+
+function initFeedback() {
+    const form = document.getElementById('feedbackForm');
+    const listEl = document.getElementById('feedbackList');
+
+    const feedbacksRef = collection(db, "feedbacks");
+
+    function escapeHtml(str) {
+        return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m]));
+    }
+
+    if (listEl) {
+        const q = query(feedbacksRef, orderBy("date", "desc"));
+        
+        onSnapshot(q, (snapshot) => {
+            let htmlContent = '';
+            
+            snapshot.forEach((doc) => {
+                const f = doc.data();
+                
+                let dateStr = '';
+                if (f.date && f.date.toDate) {
+                    dateStr = f.date.toDate().toLocaleString();
+                } else {
+                    dateStr = 'Data indisponível'; 
+                }
+
+                htmlContent += `
+                    <div class="feedback-item">
+                        <div class="feedback-name">${escapeHtml(f.name || 'Anônimo')}</div>
+                        <div class="feedback-date">${escapeHtml(dateStr)}</div>
+                        <div class="feedback-text">${escapeHtml(f.message || '')}</div>
                     </div>
+                `;
+            });
+            
+            listEl.innerHTML = htmlContent;
+        });
+    }
 
-                    <div class="cert-card">
-                        <div class="cert-badge">
-                            <i class="fab fa-python"></i>
-                            <div class="badge-pulse"></div>
-                        </div>
-                        <h3 class="cert-title">Python</h3>
-                        <p class="cert-name">Desenvolvimento e Automação</p>
-                        <p class="cert-org">[Instituição / Plataforma]</p>
-                        <div class="cert-year">[Ano]</div>
-                        <div class="cert-glow"></div>
-                    </div>
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById('feedbackName');
+            const msgInput = document.getElementById('feedbackMessage');
+            const name = nameInput.value.trim();
+            const message = msgInput.value.trim();
+            
+            if (!name || !message) return;
 
-                    <div class="cert-card">
-                        <div class="cert-badge">
-                            <i class="fab fa-react"></i>
-                            <div class="badge-pulse"></div>
-                        </div>
-                        <h3 class="cert-title">React</h3>
-                        <p class="cert-name">Desenvolvimento Front-end</p>
-                        <p class="cert-org">[Instituição / Plataforma]</p>
-                        <div class="cert-year">[Ano]</div>
-                        <div class="cert-glow"></div>
-                    </div>
+            try {
+                await addDoc(feedbacksRef, {
+                    name: name,
+                    message: message,
+                    date: serverTimestamp() 
+                });
+                
+                form.reset();
+            } catch (error) {
+                console.error("Erro ao enviar o feedback: ", error);
+                alert("Poxa, deu um erro ao enviar seu feedback. Tente novamente!");
+            }
+        });
+    }
+}
 
-                </div>
-            </div>
-        </section>
+function initHacksSlider() {
+    const sliderTrack = document.getElementById('sliderTrack');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentSlideEl = document.getElementById('currentSlide');
+    const totalSlidesEl = document.getElementById('totalSlides');
+    const sliderProgress = document.getElementById('sliderProgress');
+    const sliderIndicators = document.getElementById('sliderIndicators');
+    const sliderViewport = document.querySelector('.slider-viewport');
+    
+    if (!sliderTrack || !prevBtn || !nextBtn) return;
+    
+    const slides = sliderTrack.querySelectorAll('.slider-slide');
+    const totalSlides = slides.length;
+    let currentSlide = 0;
+    let isTransitioning = false;
+    
+    if (totalSlidesEl) totalSlidesEl.textContent = String(totalSlides).padStart(2, '0');
+    
+    function createIndicators() {
+        if (!sliderIndicators) return;
+        sliderIndicators.innerHTML = '';
+        slides.forEach((_, index) => {
+            const indicator = document.createElement('div');
+            indicator.className = 'slider-indicator';
+            if (index === 0) indicator.classList.add('active');
+            indicator.addEventListener('click', () => goToSlide(index));
+            sliderIndicators.appendChild(indicator);
+        });
+    }
+    
+    function updateSlider() {
+        if (isTransitioning) return;
+        isTransitioning = true;
+        
+        const isRTL = document.documentElement.dir === 'rtl';
+        const translateX = isRTL ? currentSlide * 100 : -currentSlide * 100;
+        sliderTrack.style.transform = `translateX(${translateX}%)`;
+        
+        const viewportWidth = sliderViewport ? sliderViewport.offsetWidth : window.innerWidth;
+        slides.forEach((slide) => {
+            slide.style.width = `${viewportWidth}px`;
+        });
+        
+        slides.forEach((slide, index) => {
+            slide.classList.toggle('active', index === currentSlide);
+        });
+        
+        if (currentSlideEl) {
+            currentSlideEl.textContent = String(currentSlide + 1).padStart(2, '0');
+        }
+        
+        if (sliderProgress) {
+            sliderProgress.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+        }
+        
+        if (sliderIndicators) {
+            const indicators = sliderIndicators.querySelectorAll('.slider-indicator');
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+        
+        setTimeout(() => {
+            isTransitioning = false;
+        }, 600);
+    }
+    
+    function resizeSlider() {
+        if (sliderViewport && sliderTrack) {
+            const viewportWidth = sliderViewport.offsetWidth;
+            slides.forEach((slide) => {
+                slide.style.width = `${viewportWidth}px`;
+            });
+            updateSlider();
+        }
+    }
+    
+    window.addEventListener('resize', resizeSlider);
+    
+    function goToSlide(index) {
+        if (isTransitioning || index === currentSlide || index < 0 || index >= totalSlides) return;
+        currentSlide = index;
+        updateSlider();
+    }
+    
+    function nextSlide() {
+        if (isTransitioning) return;
+        currentSlide = (currentSlide + 1) % totalSlides;
+        updateSlider();
+    }
+    
+    function prevSlide() {
+        if (isTransitioning) return;
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        updateSlider();
+    }
+    
+    prevBtn.addEventListener('click', () => {
+        prevSlide();
+    });
+    
+    nextBtn.addEventListener('click', () => {
+        nextSlide();
+    });
+    
+    let autoSlideInterval;
+    function startAutoSlide() {
+        if (window.innerWidth <= 768) return;
+        if (autoSlideInterval) return;
+        autoSlideInterval = setInterval(nextSlide, 5000);
+    }
+    
+    function stopAutoSlide() {
+        if (autoSlideInterval) {
+            clearInterval(autoSlideInterval);
+            autoSlideInterval = null;
+        }
+    }
+    
+    if (sliderViewport) {
+        sliderViewport.addEventListener('mouseenter', stopAutoSlide);
+        sliderViewport.addEventListener('mouseleave', startAutoSlide);
+    }
+    
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let isDragging = false;
+    
+    if (sliderViewport) {
+        sliderViewport.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            isDragging = true;
+            stopAutoSlide();
+        }, { passive: true });
+        
+        sliderViewport.addEventListener('touchmove', (e) => {
+            if (isDragging) {
+                touchEndX = e.touches[0].clientX;
+            }
+        }, { passive: true });
+        
+        sliderViewport.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+            
+            isDragging = false;
+            touchStartX = 0;
+            touchEndX = 0;
+        }, { passive: true });
+    }
+    
+    window.addEventListener('resize', () => {
+        stopAutoSlide();
+        if (window.innerWidth > 768) {
+            startAutoSlide();
+        }
+    });
+    
+    createIndicators();
+    updateSlider();
+    startAutoSlide();
+}
 
-        <section id="contact" class="section contact-section">
-            <div class="section-bg">
-                <div class="section-pattern"></div>
-            </div>
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-number">04</span>
-                    <h2 class="section-title">
-                        <span class="title-text">Contact</span>
-                        <span class="title-underline"></span>
-                    </h2>
-                </div>
-                <div class="contact-grid">
-                    <div class="contact-info">
-                        <div class="contact-card">
-                            <div class="contact-icon">
-                                <i class="fas fa-envelope"></i>
-                                <div class="icon-pulse"></div>
-                            </div>
-                            <div class="contact-details">
-                                <h4>Email</h4>
-                                <a href="mailto:gmiguel858@gmail.com">gmiguel858@gmail.com</a>
-                            </div>
-                        </div>
-                        <div class="contact-card">
-                            <div class="contact-icon">
-                                <i class="fas fa-phone"></i>
-                                <div class="icon-pulse"></div>
-                            </div>
-                            <div class="contact-details">
-                                <h4>Telefone</h4>
-                                <a href="tel:+1234567890">+55 31 998102793</a>
-                            </div>
-                        </div>
-                        <div class="contact-card">
-                            <div class="contact-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <div class="icon-pulse"></div>
-                            </div>
-                            <div class="contact-details">
-                                <h4>Localização</h4>
-                                <span>Belo Horizonte - MG - Brasil</span>
-                            </div>
-                        </div>
-                    </div>
-                    <form class="contact-form" id="contactForm">
-                        <div class="form-group">
-                            <label class="form-label">Name</label>
-                            <input type="text" id="nome" class="form-input" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Email</label>
-                            <input type="email" id="email" class="form-input" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Subject</label>
-                            <input type="text" id="assunto" class="form-input" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Message</label>
-                            <textarea id="mensagem" class="form-input form-textarea" rows="5" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-submit">
-                            <span>Send Message</span>
-                            <i class="fas fa-paper-plane"></i>
-                            <div class="btn-shine"></div>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </section>
-    </main>
+function initProjectModal() {
+    const modal = document.getElementById('projectModal');
+    if (!modal) return;
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p class="footer-text">
-                    © 2026 Portfolio - Example.
-                </p>
-                <div class="footer-social">
-                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                    <a href="https://github.com/Miguelgdn1" class="social-link"><i class="fab fa-github"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
+    const closeModalBtn = document.getElementById('closeModal');
+    const projectCards = document.querySelectorAll('.project-card');
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="module" src="Portfolio.js"></script>
+    const modalTitle = document.getElementById('modalTitle');
+    const modalImage = document.getElementById('modalImage');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalTechList = document.getElementById('modalTechList');
+
+    projectCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const title = card.getAttribute('data-title');
+            const desc = card.getAttribute('data-description');
+            const techs = card.getAttribute('data-tech').split(',');
+            const imgSrc = card.getAttribute('data-gif');
+
+            modalTitle.textContent = title;
+            modalDescription.textContent = desc;
+            modalImage.src = imgSrc;
+
+            modalTechList.innerHTML = '';
+            techs.forEach(tech => {
+                const span = document.createElement('span');
+                span.className = 'tech-tag';
+                span.textContent = tech.trim();
+                modalTechList.appendChild(span);
+            });
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    closeModalBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initLoader();
+    initMatrix();
+    initParticles();
+    initNavigation();
+    initStats();
+    initMobileMenu();
+    initParallax();
+    initScrollEffects();
+    initLanguage(); 
+    initFeedback();
+    initHacksSlider();
+    initProjectModal();
+});
+
+function initEmailJS() {
+  emailjs.init(EMAILJS_CONFIG.publicKey);
+}
 
 
+async function enviarEmail({ nome, email, mensagem }) {
+  const templateParams = {
+    from_name: nome,
+    from_email: email,
+    message: mensagem,
+  };
 
-</body>
+  try {
+    const response = await emailjs.send(
+      EMAILJS_CONFIG.serviceID,
+      EMAILJS_CONFIG.templateID,
+      templateParams
+    );
+    console.log("Email enviado com sucesso!", response.status, response.text);
+    return { sucesso: true, mensagem: "Email enviado com sucesso!" };
+  } catch (erro) {
+    console.error("Erro ao enviar email:", erro);
+    return { sucesso: false, mensagem: "Erro ao enviar. Tente novamente." };
+  }
+}
 
-</html>
+const EMAILJS_CONFIG = {
+  serviceID: "service_y9s2jn5",
+  templateID: "template_2dyxo09",
+  publicKey: "KH4L1BXtO99hWbZjI",
+};
+
+
+emailjs.init(EMAILJS_CONFIG.publicKey);
+
+
+const contactForm = document.getElementById("contactForm");
+if (contactForm) {
+  contactForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const btn = contactForm.querySelector("button[type=submit]");
+    const span = btn.querySelector("span"); 
+    
+    btn.disabled = true;
+    span.textContent = "Enviando...";
+
+    try {
+      await emailjs.send(
+        EMAILJS_CONFIG.serviceID, 
+        EMAILJS_CONFIG.templateID, 
+        {
+          from_name: document.getElementById("nome").value,
+          from_email: document.getElementById("email").value,
+          subject: document.getElementById("assunto").value,
+          message: document.getElementById("mensagem").value,
+        }
+      );
+      
+      alert("Mensagem enviada com sucesso!");
+      contactForm.reset();
+    } catch (err) {
+      console.error("Erro detalhado do EmailJS:", err); 
+      alert("Erro ao enviar. Tente novamente.");
+    }
+
+    btn.disabled = false;
+    span.textContent = "Send Secure Message";
+  });
+}
