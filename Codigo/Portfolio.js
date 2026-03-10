@@ -670,15 +670,15 @@ function initLanguage() {
         // --- Sobre Mim ---
         { pt: "Sobre Mim", en: "About Me" },
         { pt: "Estudante de Engenharia de Software", en: "Software Engineering Student" },
-        { pt: "Sou estudante de Engenharia de Software [na Instituição de Ensino], apaixonado por transformar problemas complexos em soluções elegantes. Tenho foco em desenvolver aplicações eficientes, sempre buscando aprender novas tecnologias e aprimorar minhas habilidades em desenvolvimento [Front-end / Back-end / Full-stack].", en: "I am a Software Engineering student [at Institution], passionate about turning complex problems into elegant solutions. I focus on developing efficient applications, always seeking to learn new technologies and improve my skills in [Front-end / Back-end / Full-stack] development." },
+        { pt: "Sou estudante de Engenharia de Software na Puc Minas, apaixonado por transformar problemas complexos em soluções elegantes. Tenho foco em desenvolver aplicações eficientes, sempre buscando aprender novas tecnologias e aprimorar minhas habilidades em desenvolvimento [Front-end / Back-end / Full-stack].", en: "I am a Software Engineering student at Puc Minas, passionate about turning complex problems into elegant solutions. I focus on developing efficient applications, always seeking to learn new technologies and improve my skills in [Front-end / Back-end / Full-stack] development." },
         { pt: "Desenvolvimento Back-end", en: "Back-end Development" },
         { pt: "Experiência na construção de lógicas de servidor e APIs utilizando Python, Java e bancos de dados como AWS DynamoDB.", en: "Experience in building server logic and APIs using Python, Java, and databases like AWS DynamoDB." },
         { pt: "Ecossistema Web", en: "Web Ecosystem" },
         { pt: "Integração de serviços e estruturação de projetos utilizando ferramentas como Firebase para aplicações dinâmicas.", en: "Service integration and project structuring using tools like Firebase for dynamic applications." },
         { pt: "Controle de Versão", en: "Version Control" },
         { pt: "Gerenciamento de código fonte e versionamento de projetos utilizando Git.", en: "Source code management and project versioning using Git." },
-        { pt: "[Sua Habilidade Principal]", en: "[Your Main Skill]" },
-        { pt: "[Descreva brevemente uma soft skill ou área de interesse, como Clean Code, UI/UX ou Metodologias Ágeis].", en: "[Briefly describe a soft skill or area of interest, like Clean Code, UI/UX, or Agile Methodologies]." },
+        { pt: "Adaptabilidade (Flexibilidade Cognitiva)", en: "Adaptability (Cognitive Flexibility)" },
+        { pt: "A habilidade de aprender rápido e se ajustar a mudanças. No mundo tech e corporativo de hoje, quem não se dobra, quebra.", en: "The ability to learn quickly and adapt to change. In today's tech and corporate world, those who don't bend, break." },
         { pt: "Ambiente virtual ativado com sucesso.", en: "Virtual environment activated successfully." },
 
         // --- Feedbacks ---
@@ -718,9 +718,15 @@ function initLanguage() {
                     if (node.nodeType === Node.TEXT_NODE) {
                         let text = node.textContent.trim();
                         if (text) {
-                            const match = translations.find(t => t.pt === text || t.en === text);
+                            // Normalize whitespace for matching (remove extra spaces and newlines)
+                            const normalizedText = text.replace(/\s+/g, ' ');
+                            const match = translations.find(t => 
+                                (t.pt.replace(/\s+/g, ' ') === normalizedText) || 
+                                (t.en.replace(/\s+/g, ' ') === normalizedText)
+                            );
                             if (match) {
-                                node.textContent = node.textContent.replace(text, match[lang]);
+                                const replacementText = match[lang];
+                                node.textContent = node.textContent.replace(text, replacementText);
                             }
                         }
                     }
