@@ -36,6 +36,13 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* make media elements fluid */
+img, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
 html {
     scroll-behavior: smooth;
     font-size: 16px;
@@ -918,7 +925,7 @@ body {
 
 .hero-stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
 }
@@ -1424,6 +1431,7 @@ body {
 }
 
 .container {
+    width: 90%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -3550,11 +3558,15 @@ body {
 .feedback-item .feedback-date {
     font-size: 0.85rem;
     color: var(--text-muted);
+    margin-top: 0.3rem;
+    display: block;
 }
 
 .feedback-item .feedback-text {
     margin-top: 0.5rem;
     white-space: pre-wrap;
+}
+
 .project-card {
     cursor: pointer;
     position: relative;
@@ -3731,4 +3743,4 @@ body {
     background: var(--secondary);
     color: var(--bg-dark);
     transform: translateY(-2px);
-}}
+}

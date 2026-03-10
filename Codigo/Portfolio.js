@@ -670,7 +670,7 @@ function initLanguage() {
         // --- Sobre Mim ---
         { pt: "Sobre Mim", en: "About Me" },
         { pt: "Estudante de Engenharia de Software", en: "Software Engineering Student" },
-        { pt: "Sou estudante de Engenharia de Software na Puc Minas, apaixonado por transformar problemas complexos em soluções elegantes. Tenho foco em desenvolver aplicações eficientes, sempre buscando aprender novas tecnologias e aprimorar minhas habilidades em desenvolvimento [Front-end / Back-end / Full-stack].", en: "I am a Software Engineering student at Puc Minas, passionate about turning complex problems into elegant solutions. I focus on developing efficient applications, always seeking to learn new technologies and improve my skills in [Front-end / Back-end / Full-stack] development." },
+        { pt: "Sou estudante de Engenharia de Software na Puc Minas, apaixonado por transformar problemas complexos em soluções elegantes. Tenho foco em desenvolver aplicações eficientes, sempre buscando aprender novas tecnologias e aprimorar minhas habilidades em desenvolvimento [Front-end / Back-end / Full-stack].", en: "I am a Software Engineering student at Puc, passionate about turning complex problems into elegant solutions. I focus on developing efficient applications, always seeking to learn new technologies and improve my skills in [Front-end / Back-end / Full-stack] development." },
         { pt: "Desenvolvimento Back-end", en: "Back-end Development" },
         { pt: "Experiência na construção de lógicas de servidor e APIs utilizando Python, Java e bancos de dados como AWS DynamoDB.", en: "Experience in building server logic and APIs using Python, Java, and databases like AWS DynamoDB." },
         { pt: "Ecossistema Web", en: "Web Ecosystem" },
@@ -787,8 +787,6 @@ function initFeedback() {
             snapshot.forEach((doc) => {
                 const f = doc.data();
                 
-                // O Firebase salva a data num formato especial (Timestamp). 
-                // Precisamos converter de volta para texto legível.
                 let dateStr = '';
                 if (f.date && f.date.toDate) {
                     dateStr = f.date.toDate().toLocaleString();
