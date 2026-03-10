@@ -1,3 +1,8 @@
 /node_modules/
 /.vscode/
-*.pdf
+# Arquivos de sistema do Mac (Sempre bom ter)
+.DS_Store
+
+# Variáveis de ambiente e senhas (Sempre bom ter)
+.env
+.env.local
