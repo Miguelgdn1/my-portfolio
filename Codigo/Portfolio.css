@@ -1435,7 +1435,7 @@ body {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    margin-bottom: 4rem;
+    margin-bottom: 1rem;
     text-align: left;
 }
 
@@ -2686,7 +2686,7 @@ body {
 
 /* Hacks Slider Section - Professional & Clean */
 .hacks-section {
-    padding: 6rem 0;
+    padding: 3rem 0;
     position: relative;
     overflow: hidden;
 }
@@ -2728,8 +2728,8 @@ body {
 
 .slide-card {
     position: relative;
-    padding: 4rem 3rem;
-    min-height: 500px;
+    padding: 2rem 3rem;
+    min-height: 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3678,6 +3678,7 @@ body {
     margin-bottom: 1.5rem;
     font-family: var(--font-tech);
     background: var(--gradient-1);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     padding-right: 2rem;
@@ -3730,4 +3731,4 @@ body {
     background: var(--secondary);
     color: var(--bg-dark);
     transform: translateY(-2px);
-}
+}}
