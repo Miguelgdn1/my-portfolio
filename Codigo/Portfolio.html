@@ -1,0 +1,706 @@
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>My Portfolio - MIGUEl GOMES</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&family=Fira+Code:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="Portfolio.css">
+</head>
+
+<body>
+
+    <div class="loader-screen" id="loader">
+        <div class="loader-container">
+            <div class="hack-terminal">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <div class="terminal-title">BUILD PROCESS INITIALIZATION</div>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="prompt">hgdc@workspace:~/portfolio$</span>
+                        <span class="command">npm run build && start-server</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">[INFO] Compiling modules...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">[INFO] Building robust Java/Spring Boot backend: <span
+                                class="success">ACTIVE</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output">[INFO] Optimizing Angular frontend assets: <span
+                                class="success">ONLINE</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="output success">[SUCCESS] System ready. Launching application.</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="prompt">hgdc@workspace:~/portfolio$</span>
+                        <span class="cursor">_</span>
+                    </div>
+                </div>
+            </div>
+            <div class="loader-progress-container">
+                <div class="loader-progress-bar" id="loaderProgress"></div>
+                <div class="loader-percentage" id="loaderPercent">0%</div>
+            </div>
+            <div class="hack-lines">
+                <div class="hack-line"></div>
+                <div class="hack-line"></div>
+                <div class="hack-line"></div>
+            </div>
+        </div>
+    </div>
+
+    <header class="header" id="header">
+        <div class="header-container">
+            <nav class="nav">
+                <a href="#home" class="nav-brand">
+                    <div class="brand-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <span class="brand-text">Miguel Gomes</span>
+                </a>
+                <div class="nav-menu" id="navMenu">
+                    <a href="#home" class="nav-link active" data-section="home">
+                        <span class="nav-text">Home</span>
+                    </a>
+                    <a href="#hacks" class="nav-link" data-section="hacks">
+                        <span class="nav-text">Projects</span>
+                    </a>
+                    <a href="#about" class="nav-link" data-section="about">
+                        <span class="nav-text">About</span>
+                    </a>
+                    <a href="#services" class="nav-link" data-section="services">
+                        <span class="nav-text">Feedbacks</span>
+                    </a>
+                    <a href="#certifications" class="nav-link" data-section="certifications">
+                        <span class="nav-text">Certifications</span>
+                    </a>
+                    <a href="#contact" class="nav-link" data-section="contact">
+                        <span class="nav-text">Contact</span>
+                    </a>
+                </div>
+                <div class="nav-actions">
+                    <button class="dir-toggle" id="dirToggle" title="Toggle Direction">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span class="dir-text">Language</span>
+                    </button>
+                    <button class="menu-toggle" id="menuToggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+
+        <section id="home" class="section hero">
+            <div class="hero-bg">
+                <canvas id="matrixCanvas"></canvas>
+                <div class="grid-overlay"></div>
+                <div class="scan-line"></div>
+                <div class="hack-particles" id="hackParticles"></div>
+            </div>
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <div class="badge-pulse"></div>
+                        <i class="fas fa-code"></i>
+                        <span> Full-Stack Developer</span>
+                    </div>
+                    <h1 class="hero-title">
+                        <span class="title-word" data-word="BEM-VINDO">BEM-VINDO</span>
+                        <span class="title-word highlight" data-word="AO MEU">AO MEU</span>
+                        <span class="title-word" data-word="PORTIFOLIO">PORTIFOLIO</span>
+                    </h1>
+                    <div class="hero-subtitle">
+                        <span class="subtitle-text">Full-Stack Development</span>
+                        <span class="subtitle-separator">|</span>
+                        <span class="subtitle-text">API Design</span>
+                        <span class="subtitle-separator">|</span>
+                        <span class="subtitle-text">Software Architecture</span>
+                    </div>
+                    <p class="hero-description">
+                        Engenheiro de Software focado na construção de arquiteturas robustas e aplicações web de alto
+                        desempenho, desde a infraestrutura de backend até interfaces dinâmicas e responsivas.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" data-count="5">0</div>
+                                <div class="stat-label">Projetos</div>
+                            </div>
+                            <div class="stat-glow"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" data-count="2">0</div>
+                                <div class="stat-label">Years Experience</div>
+                            </div>
+                            <div class="stat-glow"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" data-count="5">0</div>
+                                <div class="stat-label">Certifications</div>
+                            </div>
+                            <div class="stat-glow"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-number" data-count="0">0</div>
+                                <div class="stat-label">Recomendações</div>
+                            </div>
+                            <div class="stat-glow"></div>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn btn-primary">
+                            <span>Entre em contato</span>
+                            <i class="fas fa-paper-plane"></i>
+                            <div class="btn-shine"></div>
+                        </a>
+                        <a href="/MiguelGomesDoNascimento.pdf" download="MiguelGomesDoNascimento.pdf" class="btn btn-secondary">
+                            <span>Download Resume</span>
+                            <i class="fas fa-file-download"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="security-monitor expanded">
+                        <div class="monitor-frame">
+                            <div class="monitor-screen">
+                                <div class="screen-content">
+                                    <div class="screen-header">
+                                        <div class="screen-dots">
+                                            <span class="red"></span>
+                                            <span class="yellow"></span>
+                                            <span class="green"></span>
+                                        </div>
+                                        <div class="screen-title">COMMAND CENTER - MIGUEL GOMES</div>
+                                        <div class="screen-status">SYSTEMS: <span class="online">ONLINE</span></div>
+                                    </div>
+                                    <div class="screen-body metrics-grid">
+
+                                        <div class="metric-group">
+                                            <h4 class="metric-title"><i class="fas fa-history"></i> Coding Activity
+                                                (WakaTime)</h4>
+                                            <img src="https://helio-github-stats.vercel.app/api/wakatime?username=miguelgdn&custom_title=Tempo+de+Código&card_width=466&layout=compact&display_format=time&theme=dark"
+                                                class="waka-img" alt="WakaTime">
+                                            <img src="https://helio-github-stats.vercel.app/api/wakatime?username=miguelgdn&custom_title=Linguagens&card_width=466&layout=default&display_format=time&theme=dark"
+                                                class="waka-img" alt="WakaTime Langs">
+                                        </div>
+
+                                        <div class="metric-group">
+                                            <h4 class="metric-title"><i class="fab fa-github"></i> GitHub Overview</h4>
+                                            <img src="http://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=miguelgdn&theme=github_dark"
+                                                class="waka-img" alt="Profile Details">
+                                            <img src="https://github-streak-stats-ruby.vercel.app/?user=miguelgdn&theme=dark&hide_border=true&locale=pt_BR"
+                                                class="waka-img" alt="GitHub Streak">
+                                        </div>
+
+                                        <div class="metric-group full-width">
+                                            <h4 class="metric-title"><i class="fas fa-snake"></i> Contribution Grid</h4>
+                                            <div class="flex-row">
+                                                <img src="https://helio-github-stats.vercel.app/api/top-langs?username=miguelgdn&layout=pie&theme=dark&hide_border=true&card_width=300"
+                                                    class="waka-img compact" alt="Top Langs">
+                                                <img src="https://joaopauloaramuni.github.io/image/github-user-contribution.svg"
+                                                    class="waka-img snake" alt="Snake Game">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="monitor-stand"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+        </section>
+
+        <section id="hacks" class="section hacks-section">
+            <div class="section-bg">
+                <div class="section-pattern"></div>
+            </div>
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">02</span>
+                    <h2 class="section-title">
+                        <span class="title-text">Projetos</span>
+                        <span class="title-underline"></span>
+                    </h2>
+                </div>
+                <div class="hacks-slider">
+                    <div class="slider-main-container">
+                        <div class="slider-viewport">
+                            <div class="slider-track" id="sliderTrack">
+                                
+                                <div class="slider-slide active">
+                                    <div class="slide-card project-card" data-title="Scraper - Reclame Aqui"
+                                        data-description="Varre o site do reclame aqui e busca informações das melhores e piores casas de aposta"
+                                        data-tech="Python, Selenium, BeautifulSoup"
+                                        data-gif="">
+
+                                        <img src="https://picsum.photos/500/300?random=1" alt="Project Cover" class="slide-cover-img">
+                                        <div class="slide-overlay"></div>
+
+                                        <div class="slide-content-wrapper">
+                                            <h3 class="slide-title">Scraper - Reclame Aqui</h3>
+                                            <p class="slide-description">Varre o site do reclame aqui e busca informações das melhores e piores casas de aposta</p>
+                                            <div class="slide-metrics">
+                                                <div class="metric-item">
+                                                    <span class="metric-value">Python</span>
+                                                    <span class="metric-label">Selenium, BeautifulSoup</span>
+                                                </div>
+                                            </div>
+                                            <div class="click-hint"><i class="fas fa-search-plus"></i> Clique para detalhes</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slider-slide">
+                                    <div class="slide-card project-card" data-title="Ética na Engenharia de Software"
+                                        data-description="Pesquisa e estudo aprofundado sobre os dilemas éticos, impactos sociais e responsabilidades no desenvolvimento de software."
+                                        data-tech="Pesquisa Acadêmica, Engenharia de Software"
+                                        data-gif="">
+
+                                        <img src="https://picsum.photos/500/300?random=2" alt="Project Cover" class="slide-cover-img">
+                                        <div class="slide-overlay"></div>
+
+                                        <div class="slide-content-wrapper">
+                                            <h3 class="slide-title">Ética na Eng. de Software</h3>
+                                            <p class="slide-description">Pesquisa sobre os dilemas éticos e responsabilidades no desenvolvimento de software.</p>
+                                            <div class="slide-metrics">
+                                                <div class="metric-item">
+                                                    <span class="metric-value">Pesquisa</span>
+                                                    <span class="metric-label">Acadêmica</span>
+                                                </div>
+                                            </div>
+                                            <div class="click-hint"><i class="fas fa-search-plus"></i> Clique para detalhes</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slider-slide">
+                                    <div class="slide-card project-card" data-title="Automação de Notas Fiscais"
+                                        data-description="Script em desenvolvimento focado em automatizar a leitura, o processamento e a gestão de notas fiscais para otimização de tempo."
+                                        data-tech="Python, Automação, Manipulação de Dados"
+                                        data-gif="">
+
+                                        <img src="https://picsum.photos/500/300?random=3" alt="Project Cover" class="slide-cover-img">
+                                        <div class="slide-overlay"></div>
+
+                                        <div class="slide-content-wrapper">
+                                            <h3 class="slide-title">Automação de NF</h3>
+                                            <p class="slide-description">Ferramenta para leitura e processamento automático de notas fiscais.</p>
+                                            <div class="slide-metrics">
+                                                <div class="metric-item">
+                                                    <span class="metric-value">Python</span>
+                                                    <span class="metric-label">Em andamento</span>
+                                                </div>
+                                            </div>
+                                            <div class="click-hint"><i class="fas fa-search-plus"></i> Clique para detalhes</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slider-slide">
+                                    <div class="slide-card project-card" data-title="Sistema para Oficina Mecânica"
+                                        data-description="Plataforma web desenvolvida para otimizar o gerenciamento de clientes, serviços, ordens de serviço e orçamentos de uma oficina automotiva."
+                                        data-tech="Front-end, Back-end, Banco de Dados"
+                                        data-gif="">
+
+                                        <img src="https://picsum.photos/500/300?random=4" alt="Project Cover" class="slide-cover-img">
+                                        <div class="slide-overlay"></div>
+
+                                        <div class="slide-content-wrapper">
+                                            <h3 class="slide-title">Oficina Mecânica Web</h3>
+                                            <p class="slide-description">Sistema completo para gerenciamento de clientes e ordens de serviço automotivas.</p>
+                                            <div class="slide-metrics">
+                                                <div class="metric-item">
+                                                    <span class="metric-value">Web</span>
+                                                    <span class="metric-label">Gestão / Sistema</span>
+                                                </div>
+                                            </div>
+                                            <div class="click-hint"><i class="fas fa-search-plus"></i> Clique para detalhes</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="slider-slide">
+                                    <div class="slide-card project-card" data-title="Sistema BH + Feliz"
+                                        data-description="Desenvolvimento de um sistema web para estruturar e apoiar as iniciativas do projeto social BH + Feliz da Prefeitura."
+                                        data-tech="Java, Integração de Dados, Web"
+                                        data-gif="">
+
+                                        <img src="https://picsum.photos/500/300?random=5" alt="Project Cover" class="slide-cover-img">
+                                        <div class="slide-overlay"></div>
+
+                                        <div class="slide-content-wrapper">
+                                            <h3 class="slide-title">Sistema BH + Feliz</h3>
+                                            <p class="slide-description">Sistema para apoiar o projeto da prefeitura BH + Feliz.</p>
+                                            <div class="slide-metrics">
+                                                <div class="metric-item">
+                                                    <span class="metric-value">Impacto</span>
+                                                    <span class="metric-label">Em andamento</span>
+                                                </div>
+                                            </div>
+                                            <div class="click-hint"><i class="fas fa-search-plus"></i> Clique para detalhes</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="slider-controls">
+                            <button class="slider-nav-btn prev-btn" id="prevBtn">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <div class="slider-indicators" id="sliderIndicators"></div>
+                            <button class="slider-nav-btn next-btn" id="nextBtn">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="slider-footer">
+                            <div class="slider-counter">
+                                <span class="current-slide" id="currentSlide">01</span>
+                                <span class="slide-separator">/</span>
+                                <span class="total-slides" id="totalSlides">05</span>
+                            </div>
+                            <div class="slider-progress-wrapper">
+                                <div class="slider-progress-bar">
+                                    <div class="slider-progress-fill" id="sliderProgress"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<section id="about" class="section about-section">
+            <div class="section-bg">
+                <div class="section-pattern"></div>
+            </div>
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">01</span>
+                    <h2 class="section-title">
+                        <span class="title-text">Sobre Mim</span>
+                        <span class="title-underline"></span>
+                    </h2>
+                </div>
+                <div class="about-wrapper">
+                    <div class="about-intro-section">
+                        <div class="about-badge">
+                            <i class="fas fa-user-graduate"></i>
+                            <span>Estudante de Engenharia de Software</span>
+                        </div>
+                        <p class="about-text">
+                            Sou estudante de Engenharia de Software [na Instituição de Ensino], apaixonado por transformar problemas complexos em soluções elegantes. Tenho foco em desenvolver aplicações eficientes, sempre buscando aprender novas tecnologias e aprimorar minhas habilidades em desenvolvimento [Front-end / Back-end / Full-stack].
+                        </p>
+                    </div>
+                    <div class="about-grid">
+                        <div class="about-content">
+                            <div class="about-features">
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-server"></i>
+                                    </div>
+                                    <div class="feature-content">
+                                        <h3 class="feature-title">Desenvolvimento Back-end</h3>
+                                        <p class="feature-desc">Experiência na construção de lógicas de servidor e APIs utilizando Python, Java e bancos de dados como AWS DynamoDB.</p>
+                                    </div>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-laptop-code"></i>
+                                    </div>
+                                    <div class="feature-content">
+                                        <h3 class="feature-title">Ecossistema Web</h3>
+                                        <p class="feature-desc">Integração de serviços e estruturação de projetos utilizando ferramentas como Firebase para aplicações dinâmicas.</p>
+                                    </div>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-code-branch"></i>
+                                    </div>
+                                    <div class="feature-content">
+                                        <h3 class="feature-title">Controle de Versão</h3>
+                                        <p class="feature-desc">Gerenciamento de código fonte e versionamento de projetos utilizando Git.</p>
+                                    </div>
+                                </div>
+                                <div class="feature-card">
+                                    <div class="feature-icon">
+                                        <i class="fas fa-lightbulb"></i>
+                                    </div>
+                                    <div class="feature-content">
+                                        <h3 class="feature-title">[Sua Habilidade Principal]</h3>
+                                        <p class="feature-desc">[Descreva brevemente uma soft skill ou área de interesse, como Clean Code, UI/UX ou Metodologias Ágeis].</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="about-visual">
+                            <div class="security-terminal">
+                                <div class="terminal-header">
+                                    <div class="terminal-dots">
+                                        <span class="dot red"></span>
+                                        <span class="dot yellow"></span>
+                                        <span class="dot green"></span>
+                                    </div>
+                                    <div class="terminal-title">VS CODE - TERMINAL</div>
+                                </div>
+                                <div class="terminal-body">
+                                    <div class="terminal-line">
+                                        <span class="prompt">miguel@MacBook-Air-de-Miguel ~/my-portfolio-1 $</span>
+                                        <span class="command">git status</span>
+                                    </div>
+                                    <div class="terminal-line">
+                                        <span class="output">On branch main</span>
+                                    </div>
+                                    <div class="terminal-line">
+                                        <span class="output">Your branch is up to date with 'origin/main'.</span>
+                                    </div>
+                                    <div class="terminal-line">
+                                        <br>
+                                    </div>
+                                    <div class="terminal-line">
+                                        <span class="prompt">miguel@MacBook-Air-de-Miguel ~/my-portfolio-1 $</span>
+                                        <span class="command">python -m venv venv && source venv/bin/activate</span>
+                                    </div>
+                                    <div class="terminal-line">
+                                        <span class="output success">(venv) Ambiente virtual ativado com sucesso.</span>
+                                    </div>
+                                    <div class="terminal-line">
+                                        <span class="prompt">(venv) miguel@MacBook-Air-de-Miguel ~/my-portfolio-1 $</span>
+                                        <span class="cursor">_</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </section>
+        <section id="services" class="section services-section">
+            <div class="section-bg">
+                <div class="section-pattern"></div>
+            </div>
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">02</span>
+                    <h2 class="section-title">
+                        <span class="title-text">Feedbacks</span>
+                        <span class="title-underline"></span>
+                    </h2>
+                </div>
+                <div class="feedback-container">
+                    <div class="service-card feedback-card">
+                        <div class="service-header">
+                            <div class="service-icon">
+                                <i class="fas fa-comment-alt"></i>
+                                <div class="icon-glow"></div>
+                            </div>
+                        </div>
+                        <h3 class="service-title feedback-heading">Deixe seu feedback</h3>
+                        <form id="feedbackForm" class="feedback-form">
+                            <div class="form-group">
+                                <label for="feedbackName">Nome</label>
+                                <input type="text" id="feedbackName" required placeholder="Seu nome">
+                            </div>
+                            <div class="form-group">
+                                <label for="feedbackMessage">Mensagem</label>
+                                <textarea id="feedbackMessage" required placeholder="Sua mensagem"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                        </form>
+                    </div>
+                    <div id="feedbackList" class="feedback-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="certifications" class="section certs-section">
+            <div class="section-bg">
+                <div class="section-pattern"></div>
+            </div>
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">03</span>
+                    <h2 class="section-title">
+                        <span class="title-text">Certificações</span>
+                        <span class="title-underline"></span>
+                    </h2>
+                </div>
+                <div class="certs-grid">
+                    
+                    <div class="cert-card">
+                        <div class="cert-badge">
+                            <i class="fab fa-swift"></i>
+                            <div class="badge-pulse"></div>
+                        </div>
+                        <h3 class="cert-title">Swift</h3>
+                        <p class="cert-name">Linguagem de Programação</p>
+                        <p class="cert-org">[Instituição / Plataforma]</p>
+                        <div class="cert-year">[Ano]</div>
+                        <div class="cert-glow"></div>
+                    </div>
+
+                    <div class="cert-card">
+                        <div class="cert-badge">
+                            <i class="fab fa-python"></i>
+                            <div class="badge-pulse"></div>
+                        </div>
+                        <h3 class="cert-title">Python</h3>
+                        <p class="cert-name">Desenvolvimento e Automação</p>
+                        <p class="cert-org">[Instituição / Plataforma]</p>
+                        <div class="cert-year">[Ano]</div>
+                        <div class="cert-glow"></div>
+                    </div>
+
+                    <div class="cert-card">
+                        <div class="cert-badge">
+                            <i class="fab fa-react"></i>
+                            <div class="badge-pulse"></div>
+                        </div>
+                        <h3 class="cert-title">React</h3>
+                        <p class="cert-name">Desenvolvimento Front-end</p>
+                        <p class="cert-org">[Instituição / Plataforma]</p>
+                        <div class="cert-year">[Ano]</div>
+                        <div class="cert-glow"></div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section contact-section">
+            <div class="section-bg">
+                <div class="section-pattern"></div>
+            </div>
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-number">04</span>
+                    <h2 class="section-title">
+                        <span class="title-text">Contact</span>
+                        <span class="title-underline"></span>
+                    </h2>
+                </div>
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <div class="contact-card">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                                <div class="icon-pulse"></div>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <a href="mailto:gmiguel858@gmail.com">gmiguel858@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-card">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                                <div class="icon-pulse"></div>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Telefone</h4>
+                                <a href="tel:+1234567890">+55 31 998102793</a>
+                            </div>
+                        </div>
+                        <div class="contact-card">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div class="icon-pulse"></div>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Localização</h4>
+                                <span>Belo Horizonte - MG - Brasil</span>
+                            </div>
+                        </div>
+                    </div>
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" id="nome" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <input type="text" id="assunto" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea id="mensagem" class="form-input form-textarea" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-submit">
+                            <span>Send Message</span>
+                            <i class="fas fa-paper-plane"></i>
+                            <div class="btn-shine"></div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">
+                    © 2026 Portfolio - Example.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://github.com/Miguelgdn1" class="social-link"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="module" src="Portfolio.js"></script>
+
+
+
+</body>
+
+</html>
