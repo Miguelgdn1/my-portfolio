@@ -1,5 +1,5 @@
-./node_modules/
-./.vscode/
+/node_modules/
+/.vscode/
 # Arquivos de sistema do Mac (Sempre bom ter)
 .DS_Store
 
