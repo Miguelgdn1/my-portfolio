@@ -623,7 +623,7 @@ function initLanguage() {
         { pt: "Desenvolvedor Full-Stack", en: "Full-Stack Developer" },
         { pt: "BEM-VINDO", en: "WELCOME" },
         { pt: "AO MEU", en: "TO MY" },
-        { pt: "PORTIFOLIO", en: "PORTFOLIO" },
+        { pt: "PORTFÓLIO", en: "PORTFOLIO" },
         { pt: "Desenvolvimento Full-Stack", en: "Full-Stack Development" },
         { pt: "Design de API", en: "API Design" },
         { pt: "Arquitetura de Software", en: "Software Architecture" },
@@ -1092,9 +1092,9 @@ async function enviarEmail({ nome, email, mensagem }) {
 
   try {
     const response = await emailjs.send(
-      EMAILJS_CONFIG.serviceID,
-      EMAILJS_CONFIG.templateID,
-      templateParams
+        EMAILJS_CONFIG.serviceID,
+        EMAILJS_CONFIG.templateID,
+        templateParams
     );
     console.log("Email enviado com sucesso!", response.status, response.text);
     return { sucesso: true, mensagem: "Email enviado com sucesso!" };
@@ -1104,6 +1104,18 @@ async function enviarEmail({ nome, email, mensagem }) {
   }
 }
 
+/**
+ * ==========================================
+ * CONFIGURAÇÃO DO EMAILJS
+ * ==========================================
+ * NOTA SOBRE SEGURANÇA: 
+ * As chaves abaixo (serviceID, templateID, publicKey) são projetadas 
+ * pelo próprio EmailJS para serem públicas no frontend (Vanilla JS).
+ * * Elas NÃO dão acesso à conta, senhas ou leitura de emails. 
+ * A segurança contra uso indevido por terceiros é feita diretamente 
+ * no painel do EmailJS (Account > Security), onde o envio é restrito 
+ * apenas às URLs autorizadas (Origin/Referrer) deste projeto.
+ */
 const EMAILJS_CONFIG = {
   serviceID: "service_y9s2jn5",
   templateID: "template_2dyxo09",

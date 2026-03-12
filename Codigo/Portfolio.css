@@ -1,26 +1,26 @@
 :root {
-    --primary: #cc7832; /* Laranja ferrugem característico das keywords */
-    --secondary: #6897bb; /* Azul de números/variáveis */
-    --accent: #9876aa; /* Roxo para classes/interfaces */
-    --success: #629755; /* Verde para comentários/strings */
-    --warning: #ffc66d;
-    --danger: #cc666e;
-    --bg-dark: #000000; /* Fundo clássico Darcula */
-    --bg-darker: #1e1e1e;
-    --bg-card: #000000;
+    --primary: #00ffff; /* Ciano para botões */
+    --secondary: #800080; /* Roxo */
+    --accent: #800080; /* Roxo */
+    --success: #00ff00; /* Verde neon */
+    --warning: #ffff00;
+    --danger: #ff0000;
+    --bg-dark: #1a1a1a; /* Fundo grafite */
+    --bg-darker: #0f0f0f;
+    --bg-card: #2d2d2d;
     --bg-hover: #3a3a3a;
-    --border: #130101;
-    --text-primary: #a9b7c6; /* Texto base Darcula */
-    --text-secondary: #808080;
-    --text-muted: #02070c;
-    --gradient-1: linear-gradient(135deg, #cc7832 0%, #6897bb 100%);
-    --gradient-2: linear-gradient(135deg, #6897bb 0%, #cc7832 100%);
+    --border: #404040;
+    --text-primary: #ffffff; /* Texto branco */
+    --text-secondary: #cccccc; /* Cinza claro */
+    --text-muted: #888888;
+    --gradient-1: linear-gradient(135deg, #00ffff 0%, #800080 100%); /* Gradiente ciano-roxo */
+    --gradient-2: linear-gradient(135deg, #00ff00 0%, #00ffff 100%); /* Verde neon-ciano */
     
-    --shadow-sm: 0 2px 4px rgba(0,0,0,0.15);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.25);
-    --shadow-lg: 0 10px 15px rgba(0,0,0,0.35);
-    --shadow-glow: 0 0 30px rgba(204, 120, 50, 0.2);
-    --shadow-glow-strong: 0 0 50px rgba(204, 120, 50, 0.4);
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.5);
+    --shadow-glow: 0 0 30px rgba(0, 255, 255, 0.3); /* Brilho ciano */
+    --shadow-glow-strong: 0 0 50px rgba(0, 255, 255, 0.5);
     
     --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --font-primary: 'Inter', sans-serif;
@@ -3566,7 +3566,7 @@ body {
 
 .feedback-item .feedback-date {
     font-size: 0.85rem;
-    color: #ffb366;
+    color: #00e5ff;
     margin-top: 0.3rem;
     display: block;
 }
