@@ -907,12 +907,7 @@ function initHacksSlider() {
         setTimeout(() => {
             isTransitioning = false;
         }, 600);
-    }
-    
-    resizeSlider
-    
-    window.addEventListener('resize', resizeSlider);
-    
+    }    
     function goToSlide(index) {
         if (isTransitioning || index === currentSlide || index < 0 || index >= totalSlides) return;
         currentSlide = index;
