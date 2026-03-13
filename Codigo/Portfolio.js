@@ -89,17 +89,18 @@ function initMatrix() {
     
     setInterval(draw, 35);
     
+    let lastWidth = window.innerWidth; 
+    
     window.addEventListener('resize', () => {
-    const currentWidth = window.innerWidth;
+        const currentWidth = window.innerWidth;
 
-    if (currentWidth !== lastWidth) {
-        canvas.width = currentWidth;
-        canvas.height = window.innerHeight;
-        
-        lastWidth = currentWidth;
-        // render(); 
-    }
-});
+        if (currentWidth !== lastWidth) {
+            canvas.width = currentWidth;
+            canvas.height = window.innerHeight;
+            
+            lastWidth = currentWidth;
+        }
+    });
 }
 
 function initParticles() {
@@ -908,15 +909,7 @@ function initHacksSlider() {
         }, 600);
     }
     
-    function resizeSlider() {
-        if (sliderViewport && sliderTrack) {
-            const viewportWidth = sliderViewport.offsetWidth;
-            slides.forEach((slide) => {
-                slide.style.width = `${viewportWidth}px`;
-            });
-            updateSlider();
-        }
-    }
+    resizeSlider
     
     window.addEventListener('resize', resizeSlider);
     
