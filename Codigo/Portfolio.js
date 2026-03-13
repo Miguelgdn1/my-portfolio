@@ -90,9 +90,16 @@ function initMatrix() {
     setInterval(draw, 35);
     
     window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
+    const currentWidth = window.innerWidth;
+
+    if (currentWidth !== lastWidth) {
+        canvas.width = currentWidth;
         canvas.height = window.innerHeight;
-    });
+        
+        lastWidth = currentWidth;
+        // render(); 
+    }
+});
 }
 
 function initParticles() {
